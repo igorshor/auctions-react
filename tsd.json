@@ -1,0 +1,81 @@
+{
+  "version": "v4",
+  "repo": "borisyankov/DefinitelyTyped",
+  "ref": "master",
+  "path": "typings",
+  "bundle": "typings/tsd.d.ts",
+  "installed": {
+    "react/react.d.ts": {
+      "commit": "544a35a10866b32afda9c7f029c0764558563f4f"
+    },
+    "react/react-dom.d.ts": {
+      "commit": "544a35a10866b32afda9c7f029c0764558563f4f"
+    },
+    "react/react-addons-create-fragment.d.ts": {
+      "commit": "2712dd1e88d5a3f940592bc5d7102c2ab4eb39a7"
+    },
+    "react/react-global.d.ts": {
+      "commit": "2712dd1e88d5a3f940592bc5d7102c2ab4eb39a7"
+    },
+    "react/react-addons-transition-group.d.ts": {
+      "commit": "2712dd1e88d5a3f940592bc5d7102c2ab4eb39a7"
+    },
+    "react/react-addons-css-transition-group.d.ts": {
+      "commit": "2712dd1e88d5a3f940592bc5d7102c2ab4eb39a7"
+    },
+    "react/react-addons-perf.d.ts": {
+      "commit": "2712dd1e88d5a3f940592bc5d7102c2ab4eb39a7"
+    },
+    "react/react-addons-test-utils.d.ts": {
+      "commit": "2712dd1e88d5a3f940592bc5d7102c2ab4eb39a7"
+    },
+    "react/react-addons-update.d.ts": {
+      "commit": "2712dd1e88d5a3f940592bc5d7102c2ab4eb39a7"
+    },
+    "react/react-addons-pure-render-mixin.d.ts": {
+      "commit": "2712dd1e88d5a3f940592bc5d7102c2ab4eb39a7"
+    },
+    "react/react-addons-linked-state-mixin.d.ts": {
+      "commit": "2712dd1e88d5a3f940592bc5d7102c2ab4eb39a7"
+    },
+    "flux/flux.d.ts": {
+      "commit": "0e139d5d4681b71d53a30408efcc64b79eed6354"
+    },
+    "moment/moment.d.ts": {
+      "commit": "0e139d5d4681b71d53a30408efcc64b79eed6354"
+    },
+    "moment/moment-node.d.ts": {
+      "commit": "0e139d5d4681b71d53a30408efcc64b79eed6354"
+    },
+    "rx/rx.d.ts": {
+      "commit": "0e139d5d4681b71d53a30408efcc64b79eed6354"
+    },
+    "rx/rx-lite.d.ts": {
+      "commit": "0e139d5d4681b71d53a30408efcc64b79eed6354"
+    },
+    "node/node.d.ts": {
+      "commit": "8363db45d123981d6612ed40289a4d29e9b47401"
+    },
+    "eventemitter3/eventemitter3.d.ts": {
+      "commit": "94d8775a947f626269b06ccadd6f5e61839389d0"
+    },
+    "jquery/jquery.d.ts": {
+      "commit": "544a35a10866b32afda9c7f029c0764558563f4f"
+    },
+    "react-router/history.d.ts": {
+      "commit": "544a35a10866b32afda9c7f029c0764558563f4f"
+    },
+    "react-router/react-router.d.ts": {
+      "commit": "544a35a10866b32afda9c7f029c0764558563f4f"
+    },
+    "history/history.d.ts": {
+      "commit": "544a35a10866b32afda9c7f029c0764558563f4f"
+    },
+    "requirejs/require.d.ts": {
+      "commit": "544a35a10866b32afda9c7f029c0764558563f4f"
+    },
+    "bootstrap/bootstrap.d.ts": {
+      "commit": "544a35a10866b32afda9c7f029c0764558563f4f"
+    }
+  }
+}
