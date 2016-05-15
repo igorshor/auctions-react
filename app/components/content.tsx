@@ -1,7 +1,6 @@
 ///<reference path="../../_references.ts"/>
 
 module NgAuctions.Components {
-    import CategoryStore = NgAuctions.Stores.CategoryStore;
     interface IContentProps {
 
     }
@@ -11,8 +10,14 @@ module NgAuctions.Components {
     }
 
     export class Content extends React.Component<IContentProps, IContentState> {
+        public componentWillMount() {
+            Stores.AuctionStore.on(Stores.AuctionEventID[Stores.AuctionEventID.Bid], ()=> {
+                $(ReactDOM.findDOMNode(this.refs['bid'])).modal('show');
+            });
+        }
+
         render():JSX.Element {
-            var selectedCategoryName = CategoryStore.selectedCategory.Name;
+            var selectedCategoryName = Stores.CategoryStore.selectedCategory.Name;
             return <div className="content">
                 <div className="category-label">
                     <span>
@@ -20,6 +25,7 @@ module NgAuctions.Components {
                     </span>
                 </div>
                 <Auctions/>
+                <BidForm ref="bid"/>
             </div>
         }
     }

@@ -15,11 +15,11 @@ var NgAuctions;
             }
             Auctions.prototype.componentWillMount = function () {
                 var _this = this;
-                NgAuctions.Stores.AuctionStore.on(NgAuctions.Stores.AuctionEventID[NgAuctions.Stores.AuctionEventID.Bid], function () {
-                    $(ReactDOM.findDOMNode(_this.refs['bid'])).modal('show');
-                });
                 NgAuctions.Stores.AuctionStore.on(NgAuctions.Stores.AuctionEventID[NgAuctions.Stores.AuctionEventID.Updated], function () {
-                    _this.setState({ auctions: NgAuctions.Stores.AuctionStore.auctions });
+                    _this.setState({
+                        auctions: NgAuctions.Stores.AuctionStore.auctions,
+                        selectedCategory: NgAuctions.Stores.CategoryStore.selectedCategory
+                    });
                 });
                 NgAuctions.Stores.AuctionStore.on(NgAuctions.Stores.AuctionEventID[NgAuctions.Stores.AuctionEventID.Deleted], function () {
                     _this.setState({ auctions: NgAuctions.Stores.AuctionStore.auctions });
@@ -27,13 +27,23 @@ var NgAuctions;
                 NgAuctions.Stores.CategoryStore.on(NgAuctions.Stores.CategoryEventID[NgAuctions.Stores.CategoryEventID.Changed], function () {
                     _this.setState({ selectedCategory: NgAuctions.Stores.CategoryStore.selectedCategory });
                 });
-                NgAuctions.Actions.CategoryActions.CategorySelect(0);
+                NgAuctions.Actions.AuctionActions.AuctionsUpdate();
             };
             Auctions.prototype.componentWillUnmount = function () {
             };
+            Auctions.prototype.shouldComponentUpdate = function (nextProps, nextState, nextContext) {
+                return NgAuctions.Stores.AuctionStore.auctions ? true : false;
+            };
             Auctions.prototype.render = function () {
+                var auctions = this.getAuctions();
+                return React.createElement("div", null, React.createElement("ol", {className: "products"}, auctions));
+            };
+            Auctions.prototype.getAuctions = function () {
                 var _this = this;
-                var auctions = NgAuctions.Stores.AuctionStore.auctions
+                if (!NgAuctions.Stores.AuctionStore.auctions) {
+                    return null;
+                }
+                return NgAuctions.Stores.AuctionStore.auctions
                     .filter(function (auction) {
                     if (!NgAuctions.Stores.CategoryStore || _this.state.selectedCategory.Id == 0) {
                         return true;
@@ -43,7 +53,6 @@ var NgAuctions;
                     .map(function (auction) {
                     return React.createElement("li", {key: auction.Id, className: "product"}, React.createElement(Components.Auction, {auction: auction}));
                 });
-                return React.createElement("div", null, React.createElement("ol", {className: "products"}, auctions), React.createElement(Components.BidForm, {ref: "bid"}));
             };
             return Auctions;
         }(React.Component));

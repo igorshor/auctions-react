@@ -1,7 +1,7 @@
-module NgAuctions.Stores{
+module NgAuctions.Stores {
     import CategoryActions = NgAuctions.Actions.CategoryActions;
     import CategoryActionID = NgAuctions.Actions.CategoryActionID;
-    
+
     export interface ICategoriesStore {
         categoriesNames:string[];
         defaultCategory:string;
@@ -11,16 +11,32 @@ module NgAuctions.Stores{
         getCategoryName(id:number):string;
     }
 
-    export class CategoriesStoreStatic extends Utiles.EventEmitter implements ICategoriesStore{
+    export class CategoriesStoreStatic extends Utiles.EventEmitter implements ICategoriesStore {
         public categoriesNames:string[] = ['Electronics', 'Fashion', 'Home', 'Books', 'Children', 'Misc.'];
         public defaultCategory = 'All Auctions';
         public categories:Models.ICategoryData[];
         public selectedCategory:Models.ICategoryData;
 
-        constructor(){
+        constructor() {
             super();
-            this.initCategories()
+            this.initCategories();
+
+            Services.LocationService.on(
+                Services.LocationServiceEventID[Services.LocationServiceEventID.Changed], this.initLocationState)
+
         }
+
+        private initLocationState = (query:{[param:string]:string})=> {
+            if (query && query['categoryId'] !== undefined) {
+                var categoryId:number = parseInt(query['categoryId']);
+                if (categoryId) {
+                    this.selectCategory(categoryId);
+                    return;
+                }
+            }
+
+            this.selectCategory(0);
+        };
 
         public getCategoryId(name:string):number {
             return this.categoriesNames.indexOf(name) + 1;
@@ -40,24 +56,35 @@ module NgAuctions.Stores{
                 {Id: 5, Name: 'Children'},
                 {Id: 6, Name: 'Misc.'}];
 
-            this.selectedCategory = this.categories[0];
+            if (!this.selectedCategory) {
+                this.selectCategory(0);
+            }
         }
 
-        private selectCategory(categoryID:number){
-            this.selectedCategory =  this.categories[categoryID];
+        private selectCategory(categoryID:number) {
+            if (this.selectedCategory && this.selectedCategory.Id === categoryID) {
+                return;
+            }
+
+            this.selectedCategory = this.categories[categoryID];
+
+            categoryID > 0 && categoryID < this.categories.length ?
+                Services.LocationService.add('categoryId', categoryID.toString(), false) :
+                Services.LocationService.clear(false);
+
             this.emit(CategoryEventID[CategoryEventID.Changed]);
         }
-        
+
         public handelActions = (action) => {
-            switch (action.actionType){
+            switch (action.actionType) {
                 case CategoryActionID[CategoryActionID.Change]:
                     this.selectCategory(action.category);
                     break;
-                
+
             }
         }
     }
-    
+
     export var CategoryStore = new CategoriesStoreStatic();
     AppDispatcher.register(CategoryStore.handelActions);
 }

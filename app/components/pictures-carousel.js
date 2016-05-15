@@ -17,39 +17,24 @@ var NgAuctions;
             PicturesCarousel.prototype.componentDidMount = function () {
                 this.init();
             };
-            PicturesCarousel.prototype.componentWillUpdate = function (nextProps, nextState, nextContext) {
-                if (this.props !== nextProps) {
-                    this.init();
-                }
-            };
             PicturesCarousel.prototype.componentDidUpdate = function (prevProps, prevState, prevContext) {
                 $(ReactDOM.findDOMNode(this.refs['elementRef'])).carousel(0);
-            };
-            PicturesCarousel.prototype.shouldComponentUpdate = function (nextProps, nextState, nextContext) {
-                if (!nextProps) {
-                    return false;
-                }
-                if (this.props !== nextProps) {
-                    return true;
-                }
-                return false;
             };
             PicturesCarousel.prototype.init = function () {
                 this.otherPictures = [];
                 this.mainPicture = '';
                 if (this.props.pictures && this.props.pictures.length > 0) {
                     this.mainPicture = this.props.pictures[0];
-                    if (this.props.pictures.length === 1) {
-                        this.otherPictures.push(this.props.pictures[0]);
-                    }
-                    else {
-                        this.otherPictures = this.props.pictures.slice(1, this.props.pictures.length);
-                    }
+                    this.otherPictures = this.props.pictures.length === 1 ?
+                        [this.props.pictures[0]] : this.props.pictures.slice(1, this.props.pictures.length);
                 }
             };
             PicturesCarousel.prototype.render = function () {
-                var items = this.otherPictures.map(function (picUrl) { return React.createElement("img", {key: picUrl, src: picUrl}); });
-                return React.createElement("div", {id: "carouselPictures", ref: "elementRef", className: "carousel slide carousel-pictures-container", "data-ride": "carousel", "data-interval": "false"}, React.createElement("div", {className: "carousel-inner", role: "listbox"}, React.createElement("div", {className: "item active"}, React.createElement("img", {hidden: "!vm.mainPicture", src: this.mainPicture})), React.createElement("div", {className: "item"}, items)), React.createElement("a", {className: "left carousel-control carousel-button", "data-target": "#carouselPictures", role: "button", "data-slide": "prev"}, React.createElement("span", {"aria-hidden": "true"}, '<'), React.createElement("span", {className: "sr-only"}, "Previous")), React.createElement("a", {className: "right carousel-control carousel-button", "data-target": "#carouselPictures", role: "button", "data-slide": "next"}, React.createElement("span", {"aria-hidden": "true"}, '>'), React.createElement("span", {className: "sr-only"}, "Next")));
+                this.init();
+                var items = this.otherPictures.map(function (picUrl) {
+                    return React.createElement("div", {key: picUrl, className: "item"}, React.createElement("img", {src: picUrl}));
+                });
+                return React.createElement("div", {id: "carouselPictures", ref: "elementRef", className: "carousel slide carousel-pictures-container", "data-ride": "carousel", "data-interval": "false"}, React.createElement("div", {className: "carousel-inner", role: "listbox"}, React.createElement("div", {className: "item active"}, React.createElement("img", {hidden: "!vm.mainPicture", src: this.mainPicture})), items), React.createElement("a", {className: "left carousel-control carousel-button", "data-target": "#carouselPictures", role: "button", "data-slide": "prev"}, React.createElement("span", {"aria-hidden": "true"}, '<'), React.createElement("span", {className: "sr-only"}, "Previous")), React.createElement("a", {className: "right carousel-control carousel-button", "data-target": "#carouselPictures", role: "button", "data-slide": "next"}, React.createElement("span", {"aria-hidden": "true"}, '>'), React.createElement("span", {className: "sr-only"}, "Next")));
             };
             return PicturesCarousel;
         }(React.Component));

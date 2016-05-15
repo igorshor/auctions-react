@@ -14,8 +14,7 @@ module NgAuctions.Components {
     export class BidForm extends React.Component<IBidFormProps, Models.IAuctionData> {
         constructor(props) {
             super(props);
-
-            this.state = Stores.AuctionStore.auctions[0];
+            this.resetForm();
         }
 
         private placeBidClick = ()=> {
@@ -37,13 +36,44 @@ module NgAuctions.Components {
             this.setState({HighestBid: {Bid: parseFloat(newBid)} as Models.IBidData} as Models.IAuctionData);
         };
 
-        public render():JSX.Element {
-            if (!this.state) {
-                return null;
+        public shouldComponentUpdate(nextProps:IBidFormProps, nextState:Models.IAuctionData, nextContext:any):boolean {
+            return Stores.AuctionStore.auctions ? true : false;
+        }
+
+        private resetForm() {
+            var date:Date = moment().toDate();
+            var futureDate = this.state && this.state.EndTime ? this.state.EndTime : date;
+
+            this.state = {
+                Title: '',
+                Description: '',
+                StartTime: date,
+                EndTime: date,
+                StartBid: 0,
+                Picture1: '',
+                Picture2: '',
+                Picture3: '',
+                Picture4: '',
+                Id: '',
+                IsItemNew: false,
+                User: {
+                    Name: '',
+                    Email: '',
+                } as any,
+                Category: {
+                    Id: 0,
+                    Name: ''
+                },
+                HighestBid: null,
+                BidCount: 0
             }
+        }
+
+        public render():JSX.Element {
+
 
             var minBidValue = this.state.HighestBid ?
-                    this.state.HighestBid.Bid : (this.state.StartBid + 0.01);
+                this.state.HighestBid.Bid : (this.state.StartBid + 0.01);
             var highestBid:number = parseFloat((minBidValue).toFixed(2));
             var timeLeft = Utiles.DateUtiles.getFormattedCountDown(this.state.EndTime);
             var mailTo = "mailto:" + this.state.User.Email + "?Subject=SELL";

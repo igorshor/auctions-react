@@ -22,7 +22,7 @@ var NgAuctions;
                     }
                     _this.setState({ HighestBid: { Bid: parseFloat(newBid) } });
                 };
-                this.state = NgAuctions.Stores.AuctionStore.auctions[0];
+                this.resetForm();
             }
             BidForm.prototype.componentWillMount = function () {
                 var _this = this;
@@ -30,10 +30,37 @@ var NgAuctions;
                     _this.setState(data.auction);
                 });
             };
+            BidForm.prototype.shouldComponentUpdate = function (nextProps, nextState, nextContext) {
+                return NgAuctions.Stores.AuctionStore.auctions ? true : false;
+            };
+            BidForm.prototype.resetForm = function () {
+                var date = moment().toDate();
+                var futureDate = this.state && this.state.EndTime ? this.state.EndTime : date;
+                this.state = {
+                    Title: '',
+                    Description: '',
+                    StartTime: date,
+                    EndTime: date,
+                    StartBid: 0,
+                    Picture1: '',
+                    Picture2: '',
+                    Picture3: '',
+                    Picture4: '',
+                    Id: '',
+                    IsItemNew: false,
+                    User: {
+                        Name: '',
+                        Email: '',
+                    },
+                    Category: {
+                        Id: 0,
+                        Name: ''
+                    },
+                    HighestBid: null,
+                    BidCount: 0
+                };
+            };
             BidForm.prototype.render = function () {
-                if (!this.state) {
-                    return null;
-                }
                 var minBidValue = this.state.HighestBid ?
                     this.state.HighestBid.Bid : (this.state.StartBid + 0.01);
                 var highestBid = parseFloat((minBidValue).toFixed(2));

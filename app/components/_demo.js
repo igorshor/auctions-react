@@ -13,6 +13,21 @@ var NgAuctions;
             function X() {
                 _super.apply(this, arguments);
             }
+            X.prototype.componentWillMount = function () {
+            };
+            X.prototype.componentDidMount = function () {
+            };
+            X.prototype.componentWillReceiveProps = function (nextProps, nextContext) {
+            };
+            X.prototype.shouldComponentUpdate = function (nextProps, nextState, nextContext) {
+                return null;
+            };
+            X.prototype.componentWillUpdate = function (nextProps, nextState, nextContext) {
+            };
+            X.prototype.componentDidUpdate = function (prevProps, prevState, prevContext) {
+            };
+            X.prototype.componentWillUnmount = function () {
+            };
             X.prototype.render = function () {
                 return null;
             };

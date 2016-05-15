@@ -11,5 +11,5 @@ module NgAuctions.Utiles{
         }
     }
     
-    export var DateUtiles = new DateUtilesStatic();
+    export var DateUtiles:IDateUtiles = new DateUtilesStatic();
 }

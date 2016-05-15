@@ -4,9 +4,10 @@ var NgAuctions;
     (function (Stores) {
         var UserStoreStatic = (function () {
             function UserStoreStatic() {
-                this.userLoginName = 'igors';
+                this.userLoginName = 'superUser';
                 this.userLoginPassword = 'CB989279-AAEC-4EAA-8027-3BF67E05C3A3';
-                this.userName = 'Igor S';
+                this.userName = 'Super User';
+                NgAuctions.Services.NetService.authorization(this.userLoginName, this.userLoginPassword);
             }
             return UserStoreStatic;
         }());

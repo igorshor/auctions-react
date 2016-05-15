@@ -17,12 +17,11 @@ module NgAuctions.Components {
         }
 
         public componentWillMount() {
-            Stores.AuctionStore.on(Stores.AuctionEventID[Stores.AuctionEventID.Bid], ()=> {
-                $(ReactDOM.findDOMNode(this.refs['bid'])).modal('show');
-            });
-
             Stores.AuctionStore.on(Stores.AuctionEventID[Stores.AuctionEventID.Updated], ()=> {
-                this.setState({auctions: Stores.AuctionStore.auctions});
+                this.setState({
+                    auctions: Stores.AuctionStore.auctions,
+                    selectedCategory: Stores.CategoryStore.selectedCategory
+                });
             });
 
             Stores.AuctionStore.on(Stores.AuctionEventID[Stores.AuctionEventID.Deleted], ()=> {
@@ -33,15 +32,33 @@ module NgAuctions.Components {
                 this.setState({selectedCategory: Stores.CategoryStore.selectedCategory})
             });
 
-            Actions.CategoryActions.CategorySelect(0);
+            Actions.AuctionActions.AuctionsUpdate();
         }
 
         public componentWillUnmount() {
 
         }
 
+        public shouldComponentUpdate(nextProps:IAuctionsProps, nextState:IAuctionsState, nextContext:any):boolean {
+            return Stores.AuctionStore.auctions ? true : false;
+        }
+
         public render():JSX.Element {
-            var auctions = Stores.AuctionStore.auctions
+            var auctions:JSX.Element[] = this.getAuctions();
+
+            return <div>
+                <ol className="products">
+                    {auctions}
+                </ol>
+            </div>
+        }
+
+        private getAuctions():JSX.Element[] {
+            if (!Stores.AuctionStore.auctions) {
+                return null;
+            }
+
+            return Stores.AuctionStore.auctions
                 .filter((auction:Models.IAuctionData)=> {
                     if (!Stores.CategoryStore || this.state.selectedCategory.Id == 0) {
                         return true;
@@ -53,14 +70,6 @@ module NgAuctions.Components {
                         <Auction auction={auction}/>
                     </li>
                 );
-
-            return <div>
-                <ol className="products">
-                    {auctions}
-                </ol>
-                <BidForm ref="bid"/>
-            </div>
         }
-
     }
 }

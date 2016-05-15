@@ -6,7 +6,7 @@ module NgAuctions {
     import Route = ReactRouter.Route;
     import hashHistory = ReactRouter.hashHistory;
     import browserHistory = ReactRouter.browserHistory;
-    
+
     const app = document.getElementById('app');
     ReactDOM.render(<Layout/>, app)
 }

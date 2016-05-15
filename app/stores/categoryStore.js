@@ -15,6 +15,16 @@ var NgAuctions;
                 _super.call(this);
                 this.categoriesNames = ['Electronics', 'Fashion', 'Home', 'Books', 'Children', 'Misc.'];
                 this.defaultCategory = 'All Auctions';
+                this.initLocationState = function (query) {
+                    if (query && query['categoryId'] !== undefined) {
+                        var categoryId = parseInt(query['categoryId']);
+                        if (categoryId) {
+                            _this.selectCategory(categoryId);
+                            return;
+                        }
+                    }
+                    _this.selectCategory(0);
+                };
                 this.handelActions = function (action) {
                     switch (action.actionType) {
                         case CategoryActionID[CategoryActionID.Change]:
@@ -23,6 +33,7 @@ var NgAuctions;
                     }
                 };
                 this.initCategories();
+                NgAuctions.Services.LocationService.on(NgAuctions.Services.LocationServiceEventID[NgAuctions.Services.LocationServiceEventID.Changed], this.initLocationState);
             }
             CategoriesStoreStatic.prototype.getCategoryId = function (name) {
                 return this.categoriesNames.indexOf(name) + 1;
@@ -39,10 +50,18 @@ var NgAuctions;
                     { Id: 4, Name: 'Books' },
                     { Id: 5, Name: 'Children' },
                     { Id: 6, Name: 'Misc.' }];
-                this.selectedCategory = this.categories[0];
+                if (!this.selectedCategory) {
+                    this.selectCategory(0);
+                }
             };
             CategoriesStoreStatic.prototype.selectCategory = function (categoryID) {
+                if (this.selectedCategory && this.selectedCategory.Id === categoryID) {
+                    return;
+                }
                 this.selectedCategory = this.categories[categoryID];
+                categoryID > 0 && categoryID < this.categories.length ?
+                    NgAuctions.Services.LocationService.add('categoryId', categoryID.toString(), false) :
+                    NgAuctions.Services.LocationService.clear(false);
                 this.emit(Stores.CategoryEventID[Stores.CategoryEventID.Changed]);
             };
             return CategoriesStoreStatic;
