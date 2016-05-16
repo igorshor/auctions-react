@@ -22,20 +22,24 @@ module NgAuctions.Stores {
             this.initCategories();
 
             Services.LocationService.on(
-                Services.LocationServiceEventID[Services.LocationServiceEventID.Changed], this.initLocationState)
+                Services.LocationServiceEventID[Services.LocationServiceEventID.Changed],
+                (query:{[param:string]:string})=> this.selectCategory(this.getLocationState(query)));
+
+            Services.LocationService.on(
+                Services.LocationServiceEventID[Services.LocationServiceEventID.Popped],
+                (query:{[param:string]:string})=> this.selectCategory(this.getLocationState(query), false))
 
         }
 
-        private initLocationState = (query:{[param:string]:string})=> {
+        private getLocationState = (query:{[param:string]:string})=> {
             if (query && query['categoryId'] !== undefined) {
                 var categoryId:number = parseInt(query['categoryId']);
                 if (categoryId) {
-                    this.selectCategory(categoryId);
-                    return;
+                    return categoryId;
                 }
             }
 
-            this.selectCategory(0);
+            return 0;
         };
 
         public getCategoryId(name:string):number {
@@ -61,16 +65,18 @@ module NgAuctions.Stores {
             }
         }
 
-        private selectCategory(categoryID:number) {
+        private selectCategory(categoryID:number, addToHistory:boolean = true) {
             if (this.selectedCategory && this.selectedCategory.Id === categoryID) {
                 return;
             }
 
             this.selectedCategory = this.categories[categoryID];
 
-            categoryID > 0 && categoryID < this.categories.length ?
-                Services.LocationService.add('categoryId', categoryID.toString(), false) :
-                Services.LocationService.clear(false);
+            if (addToHistory) {
+                categoryID > 0 && categoryID < this.categories.length ?
+                    Services.LocationService.add('categoryId', categoryID.toString(), false) :
+                    Services.LocationService.clear(false);
+            }
 
             this.emit(CategoryEventID[CategoryEventID.Changed]);
         }

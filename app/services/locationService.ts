@@ -3,6 +3,7 @@
 module NgAuctions.Services {
     export enum LocationServiceEventID{
         Changed,
+        Popped
     }
 
     export interface ILocationService {
@@ -13,26 +14,23 @@ module NgAuctions.Services {
     }
 
     class LocationServiceStatic extends Utiles.EventEmitter implements ILocationService {
-        private queryParams:{[param:string]:string};
-        private initialized:boolean;
 
         constructor() {
             super();
-            this.initialized = false;
-            this.queryParams = {};
-            $(($)=> {
+            $(window).on('popstate', ()=> {
                 var query:{[param:string]:string} = this.parseQuery(document.location.search);
-                if (query && Object.keys(query).length > 0) {
-                    this.queryParams = query;
-                    history.pushState({}, "", window.location.pathname);
-                    this.emit(LocationServiceEventID[LocationServiceEventID.Changed], query);
-                }
-            })
-        }
+                this.emit(LocationServiceEventID[LocationServiceEventID.Popped], query);
+            });
+            $(window).load(()=> {
+                var query:{[param:string]:string} = this.parseQuery(document.location.search);
+                this.emit(LocationServiceEventID[LocationServiceEventID.Changed], query);
+            });
 
+        }
+        
         public clear(trigger:boolean):void {
-            if (Object.keys(this.queryParams).length !== 0 && JSON.stringify(this.queryParams) !== JSON.stringify({})) {
-                this.queryParams = {};
+            var query:{[param:string]:string} = this.parseQuery(document.location.search);
+            if (query && Object.keys(query).length !== 0 && JSON.stringify(query) !== JSON.stringify({})) {
                 history.pushState({}, "", window.location.pathname);
                 if (trigger) {
                     this.emit(LocationServiceEventID[LocationServiceEventID.Changed]);
@@ -41,10 +39,13 @@ module NgAuctions.Services {
         }
 
         public remove(key:string, trigger:boolean):void {
-            if (this.queryParams[key]) {
-                delete this.queryParams[key];
-                this.emit(LocationServiceEventID[LocationServiceEventID.Changed]);
-                history.pushState({}, "", window.location.pathname);
+            var query:{[param:string]:string} = this.parseQuery(document.location.search);
+
+            if (query[key]) {
+                delete query[key];
+                var queryStr:string = Object.keys(query).length > 0 ? $.param(query) : '';
+                history.pushState({}, "", window.location.pathname + queryStr);
+
                 if (trigger) {
                     this.emit(LocationServiceEventID[LocationServiceEventID.Changed]);
                 }
@@ -56,10 +57,11 @@ module NgAuctions.Services {
                 return;
             }
 
-            var beforeValue:string = this.queryParams[key];
+            var query:{[param:string]:string} = this.parseQuery(document.location.search) || {};
 
-            this.queryParams[key] = value;
-            history.pushState({}, "", window.location.pathname + '?' + $.param(this.queryParams));
+            var beforeValue:string = query[key];
+            query[key] = value;
+            history.pushState(query, "", window.location.pathname + '?' + $.param(query));
 
             if (beforeValue !== value) {
                 if (trigger) {
@@ -68,7 +70,7 @@ module NgAuctions.Services {
             }
         }
 
-        private parseQuery(qstr):{[param:string]:string} {
+        private parseQuery(qstr:string):{[param:string]:string} {
             if (!qstr) {
                 return;
             }

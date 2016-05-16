@@ -15,15 +15,14 @@ var NgAuctions;
                 _super.call(this);
                 this.categoriesNames = ['Electronics', 'Fashion', 'Home', 'Books', 'Children', 'Misc.'];
                 this.defaultCategory = 'All Auctions';
-                this.initLocationState = function (query) {
+                this.getLocationState = function (query) {
                     if (query && query['categoryId'] !== undefined) {
                         var categoryId = parseInt(query['categoryId']);
                         if (categoryId) {
-                            _this.selectCategory(categoryId);
-                            return;
+                            return categoryId;
                         }
                     }
-                    _this.selectCategory(0);
+                    return 0;
                 };
                 this.handelActions = function (action) {
                     switch (action.actionType) {
@@ -33,7 +32,8 @@ var NgAuctions;
                     }
                 };
                 this.initCategories();
-                NgAuctions.Services.LocationService.on(NgAuctions.Services.LocationServiceEventID[NgAuctions.Services.LocationServiceEventID.Changed], this.initLocationState);
+                NgAuctions.Services.LocationService.on(NgAuctions.Services.LocationServiceEventID[NgAuctions.Services.LocationServiceEventID.Changed], function (query) { return _this.selectCategory(_this.getLocationState(query)); });
+                NgAuctions.Services.LocationService.on(NgAuctions.Services.LocationServiceEventID[NgAuctions.Services.LocationServiceEventID.Popped], function (query) { return _this.selectCategory(_this.getLocationState(query), false); });
             }
             CategoriesStoreStatic.prototype.getCategoryId = function (name) {
                 return this.categoriesNames.indexOf(name) + 1;
@@ -54,14 +54,17 @@ var NgAuctions;
                     this.selectCategory(0);
                 }
             };
-            CategoriesStoreStatic.prototype.selectCategory = function (categoryID) {
+            CategoriesStoreStatic.prototype.selectCategory = function (categoryID, addToHistory) {
+                if (addToHistory === void 0) { addToHistory = true; }
                 if (this.selectedCategory && this.selectedCategory.Id === categoryID) {
                     return;
                 }
                 this.selectedCategory = this.categories[categoryID];
-                categoryID > 0 && categoryID < this.categories.length ?
-                    NgAuctions.Services.LocationService.add('categoryId', categoryID.toString(), false) :
-                    NgAuctions.Services.LocationService.clear(false);
+                if (addToHistory) {
+                    categoryID > 0 && categoryID < this.categories.length ?
+                        NgAuctions.Services.LocationService.add('categoryId', categoryID.toString(), false) :
+                        NgAuctions.Services.LocationService.clear(false);
+                }
                 this.emit(Stores.CategoryEventID[Stores.CategoryEventID.Changed]);
             };
             return CategoriesStoreStatic;
