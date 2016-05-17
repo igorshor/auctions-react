@@ -1,0 +1,30 @@
+{
+  "name": "NgAuctionsReactJs",
+  "description": "-=-=-=-",
+  "main": "index.html",
+  "authors": [
+    "Igor Shor <igors@codevalue.net>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/igorshor/auctions-react",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "commonjs": "^0.2.0",
+    "gulp": "^3.9.1",
+    "bootstrap": "^3.3.6",
+    "flux": "^2.1.1",
+    "react-router": "^2.1.1",
+    "history.js": "history#^1.8.0",
+    "moment": "^2.12.0",
+    "requirejs": "^2.2.0",
+    "rxjs": "^4.1.0",
+    "react": "^15.0.1"
+  }
+}
